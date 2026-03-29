@@ -1,27 +1,25 @@
 package pro1.swingComponents;
 
-import pro1.drawingModel.Drawable;
+import pro1.drawingModel.Polyline;
 
 import javax.swing.*;
 import java.awt.*;
 
 public class DisplayPanel extends JPanel {
 
-    Drawable drawable = null;
+    private Polyline polyline = new Polyline();
 
     public DisplayPanel(){
         this.setBackground(Color.WHITE);
     }
 
-    public void setDrawable(Drawable drawable) {
-        this.drawable = drawable;
-        this.repaint();
+    public Polyline getPolyline() {
+        return polyline;
     }
 
     @Override
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
-        if (this.drawable != null)
-            this.drawable.draw((Graphics2D) g);
+        polyline.draw((Graphics2D) g);
     }
 }

@@ -1,9 +1,5 @@
 package pro1.swingComponents;
 
-import pro1.drawingModel.*;
-import pro1.drawingModel.Rectangle;
-import pro1.utils.ColorUtils;
-
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
@@ -14,7 +10,6 @@ public class MainFrame extends JFrame {
 
     public MainFrame() {
         this.setTitle("PRO1 Drawing");
-        this.setVisible(true);
         this.setSize(800, 800);
         this.setDefaultCloseOperation(EXIT_ON_CLOSE);
         this.setExtendedState(JFrame.MAXIMIZED_BOTH);
@@ -23,23 +18,40 @@ public class MainFrame extends JFrame {
         this.add(this.displayPanel, BorderLayout.CENTER);
 
         JPanel leftPanel = new JPanel();
-        leftPanel.setPreferredSize(
-                new Dimension(200, 0));
+        leftPanel.setPreferredSize(new Dimension(200, 0));
+        leftPanel.setLayout(new BoxLayout(leftPanel, BoxLayout.Y_AXIS));
         this.add(leftPanel, BorderLayout.WEST);
+
+        JSlider slider = new JSlider(1, 20, 2);
+        slider.addChangeListener(e -> {
+            displayPanel.getPolyline().setThickness(slider.getValue());
+            displayPanel.repaint();
+        });
+        leftPanel.add(new JLabel("Thickness"));
+        leftPanel.add(slider);
+
+        JCheckBox checkBox = new JCheckBox("Red", true);
+        checkBox.addActionListener(e -> {
+            displayPanel.getPolyline().setRed(checkBox.isSelected());
+            displayPanel.repaint();
+        });
+        leftPanel.add(checkBox);
+
+        JButton reset = new JButton("Reset");
+        reset.addActionListener(e -> {
+            displayPanel.getPolyline().reset();
+            displayPanel.repaint();
+        });
+        leftPanel.add(reset);
 
         this.displayPanel.addMouseListener(new MouseAdapter() {
             @Override
             public void mousePressed(MouseEvent e) {
-                displayPanel.setDrawable(example(e.getX(), e.getY()));
+                displayPanel.getPolyline().addPoint(e.getX(), e.getY());
+                displayPanel.repaint();
             }
         });
-    }
 
-    private Drawable example(int x, int y) {
-        var color = ColorUtils.randomColor();
-        var d1 = new Ellipse(0, 0, 150, 250, color);
-        var d2 = new Text(0, 0, color);
-        var d3 = new Line(0, 50,170,170,3, color);
-        return new Group(new Drawable[]{d1, d2, d3}, x, y, 40, 1, 1);
+        this.setVisible(true);
     }
 }
